@@ -244,7 +244,14 @@ def convert_points_to_plot_coordinate(
     return np.array(converted_points)
 
 
-def search(data: DataBatch, searchParams: SearchParams, normalize: bool = True, tile_size: int = 640, overlap_ratio: float = 0.85) -> TargetData:
+def search(
+    data: DataBatch,
+    searchParams: SearchParams,
+    normalize: bool = True,
+    tile_size: int = 640,
+    overlap_ratio: float = 0.85,
+    device: str | int | None = None,
+) -> TargetData:
     """Запускаем YOLO-детекцию на магнитограмме.
 
     Поддерживается режим подготовки входа `normalize`:
@@ -263,6 +270,8 @@ def search(data: DataBatch, searchParams: SearchParams, normalize: bool = True, 
         conf_thresh = searchParams.confidence_threshold
         iou_thresh = searchParams.iou_threshold
         rotation = getattr(searchParams, "yolo_rotation", 0)
+        if device is None:
+            device = getattr(searchParams, "device", None)
     
         img = _prepare_image(acp, rotation=rotation, normalize=normalize)
         """ Убедимся, что изображение для YOLO имеет правильный формат."""
@@ -290,6 +299,7 @@ def search(data: DataBatch, searchParams: SearchParams, normalize: bool = True, 
                 agnostic_nms=True,
                 verbose=False,
                 show=False,
+                device=device,
             )
     
             if res and res[0].boxes is not None:
