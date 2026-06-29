@@ -79,6 +79,7 @@ class SectorViewer(tk.Tk):
         # Tiling params for YOLO on big images
         self.tile_size_var = tk.IntVar(value=640)
         self.overlap_ratio_var = tk.DoubleVar(value=0.2)
+        self.device_var = tk.StringVar(value="auto")
         self.normalize_var = tk.BooleanVar(value=True)
         self.status_var = tk.StringVar(value="Загрузите .npz файл")
 
@@ -142,6 +143,16 @@ class SectorViewer(tk.Tk):
             width=8,
         )
         rotation_box.pack(fill=tk.X, pady=(0, 12))
+
+        ttk.Label(panel, text="Устройство YOLO").pack(anchor=tk.W)
+        device_box = ttk.Combobox(
+            panel,
+            textvariable=self.device_var,
+            values=("auto", "cpu", "cuda", "mps"),
+            state="readonly",
+            width=8,
+        )
+        device_box.pack(fill=tk.X, pady=(0, 12))
 
         ttk.Label(panel, text="Секторы").pack(anchor=tk.W)
         list_frame = ttk.Frame(panel)
@@ -279,6 +290,11 @@ class SectorViewer(tk.Tk):
                 normalize=self.normalize_var.get(),
                 tile_size=int(self.tile_size_var.get()),
                 overlap_ratio=float(self.overlap_ratio_var.get()),
+                device=(
+                    "cpu"
+                    if self.device_var.get() == "cpu"
+                    else (0 if self.device_var.get() == "cuda" else ("mps" if self.device_var.get() == "mps" else None))
+                ),
             )
         except Exception as exc:
             messagebox.showerror("Ошибка YOLO", str(exc))
