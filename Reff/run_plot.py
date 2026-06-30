@@ -176,11 +176,11 @@ def main():
     Minimal example of loading batches by index and calling search.
     """
     # SET YOUR DATA PATH
-    npz_datasets_dir = 'ROW_DATA/df/stand-1_Sar-2025/mdr/npz_datasets'
+    npz_datasets_dir = '/mnt/data/infotech_files/1400 2025 Ур-Уж 2025 нарезка NPZ/ИМР/npz_datasets'
 
     for batch_idx in range(4):
         # Load data & get params
-        input_data, params = load_npz_data_batch(npz_datasets_dir, batch_idx)
+        input_data, params = load_npz_data_batch_extra(npz_datasets_dir, batch_idx)
         # plot_magnitogram(input_data)  # data visualisation
 
         # Run entry point
